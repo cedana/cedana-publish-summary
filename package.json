@@ -1,0 +1,23 @@
+{
+  "name": "cedana-publish-summary",
+  "version": "1.0.0",
+  "description": "GitHub action to post a release summary to Slack, with markdown correctly converted to Slack mrkdwn",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "build": "ncc build src/index.js -o dist --license licenses.txt",
+    "test": "node --test test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cedana/cedana-publish-summary.git"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "slackify-markdown": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.3"
+  }
+}

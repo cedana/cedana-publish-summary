@@ -1,0 +1,66 @@
+name: Cedana Publish Summary
+description: Post a release summary to Slack (Block Kit), with GitHub-flavored markdown correctly converted to Slack mrkdwn
+author: Cedana
+
+branding:
+  icon: message-square
+  color: blue
+
+inputs:
+  title:
+    description: Title of the release summary (e.g. the project name)
+    required: false
+    default: ${{ github.event.repository.name }}
+  tag:
+    description: Release tag to summarize. Defaults to the latest non-draft release.
+    required: false
+  previous-tag:
+    description: Previous release tag, used for comparison. Defaults to the release preceding `tag`.
+    required: false
+  description:
+    description: Short markdown description shown under the title. Defaults to the tag in bold.
+    required: false
+  release-notes-url:
+    description: URL for the release notes button. Defaults to the GitHub release page for `tag`.
+    required: false
+  binaries-dir:
+    description: Directory containing the current release binaries, to report sizes for.
+    required: false
+  previous-binaries-dir:
+    description: Directory containing the previous release binaries, to compare sizes against.
+    required: false
+  versions:
+    description: >-
+      Space-separated version labels for multi-version layouts. Each label is expected to be
+      a subdirectory of `binaries-dir` (and `previous-binaries-dir`) containing that version's binaries.
+    required: false
+  versions-label:
+    description: Label prefix for each version in multi-version layouts (e.g. "SLURM" -> "SLURM 24.05").
+    required: false
+  slack-webhook-url:
+    description: Slack incoming webhook URL to post the summary to.
+    required: true
+  github-token:
+    description: GitHub token used to read release information.
+    required: false
+    default: ${{ github.token }}
+  step-summary:
+    description: Also write the release notes to the GitHub step summary.
+    required: false
+    default: "true"
+  dry-run:
+    description: Build the payload without posting to Slack.
+    required: false
+    default: "false"
+
+outputs:
+  payload:
+    description: The Slack Block Kit payload that was posted.
+  tag:
+    description: The resolved release tag.
+  previous-tag:
+    description: The resolved previous release tag.
+
+runs:
+  using: node20
+  main: dist/index.js
