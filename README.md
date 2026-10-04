@@ -4,6 +4,10 @@ GitHub action that posts a release summary to Slack using [Block Kit](https://ap
 
 The summary includes the release notes, version comparison with the previous release, and optional binary size comparisons.
 
+![Release summary as posted to Slack](docs/slack.png)
+
+*Rendering of the Block Kit payload for a cedana release (not a Slack screenshot), produced by `npm run sample-image`.*
+
 ## Usage
 
 Minimal — summarizes the latest non-draft release:
@@ -75,6 +79,7 @@ Multi-version binary layout (e.g. one build per SLURM version, in subdirectories
 ```sh
 npm install
 npm run build   # bundles src/index.js -> dist/index.js (commit dist!)
+GITHUB_TOKEN=$(gh auth token) npm run sample-image   # regenerates docs/slack.png from the latest cedana release
 ```
 
 Test locally against a real repository without posting to Slack:
