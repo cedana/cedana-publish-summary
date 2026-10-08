@@ -2,7 +2,7 @@
 
 GitHub action that posts a release summary to Slack using [Block Kit](https://api.slack.com/block-kit), with GitHub-flavored markdown release notes correctly converted to Slack mrkdwn (via [slackify-markdown](https://github.com/jsarafajr/slackify-markdown)).
 
-The summary includes the release notes, version comparison with the previous release, and optional binary size comparisons.
+The summary includes the release notes, the test matrix of any [cedana-test-summary](https://github.com/cedana/cedana-test-summary) posted earlier in the same workflow run, version comparison with the previous release, and optional binary size comparisons.
 
 ![Release summary as posted to Slack](docs/slack.png)
 
@@ -48,6 +48,10 @@ Multi-version binary layout (e.g. one build per SLURM version, in subdirectories
     slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL_RELEASE }}
 ```
 
+### Test matrix
+
+When a job earlier in the same workflow run posted a test summary with [cedana-test-summary](https://github.com/cedana/cedana-test-summary), its test matrix image is embedded below the release notes. The test summary leaves its outputs behind as a `test-summary-<title>` artifact of the run, which this action looks up through the runner's own artifact API, so no token or permission is needed; when the run has no such artifact (for example when publishing runs before or without tests), nothing is embedded. Set `test-summary: false` to opt out.
+
 ## Inputs
 
 | Input | Description | Default |
@@ -64,6 +68,7 @@ Multi-version binary layout (e.g. one build per SLURM version, in subdirectories
 | `slack-webhook-url` | Slack incoming webhook URL (**required**) | — |
 | `github-token` | Token used to read release information | `github.token` |
 | `step-summary` | Also write release notes to the GitHub step summary | `true` |
+| `test-summary` | Embed the test matrix of the test summaries posted earlier in the run | `true` |
 | `dry-run` | Build the payload without posting to Slack | `false` |
 
 ## Outputs

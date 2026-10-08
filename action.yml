@@ -48,6 +48,12 @@ inputs:
     description: Also write the release notes to the GitHub step summary.
     required: false
     default: "true"
+  test-summary:
+    description: >-
+      Embed the test matrix image(s) of the test summaries posted earlier in this workflow run by
+      cedana-test-summary, when any.
+    required: false
+    default: "true"
   dry-run:
     description: Build the payload without posting to Slack.
     required: false
