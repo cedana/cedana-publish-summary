@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const core = require('@actions/core');
 const slackifyMarkdown = require('slackify-markdown');
+const { findTestSummaries, testMatrixBlocks } = require('./test-summary');
 
 const MAX_BLOCKS = 50;
 const MAX_SECTION_TEXT = 3000;
@@ -135,9 +136,20 @@ async function run() {
     const webhookUrl = core.getInput('slack-webhook-url', { required: true });
     const token = core.getInput('github-token', { required: true });
     const stepSummary = core.getBooleanInput('step-summary');
+    const testSummary = core.getBooleanInput('test-summary');
     const dryRun = core.getBooleanInput('dry-run');
 
     const { current, tag, previousTag } = await resolveReleases(token, inputTag, inputPreviousTag);
+
+    let testSummaries = [];
+    if (testSummary) {
+        try {
+            testSummaries = await findTestSummaries();
+            core.info(`Found ${testSummaries.length} test summary artifact(s) in this run`);
+        } catch (error) {
+            core.warning(`Could not look up test summaries of this run: ${error.message}`);
+        }
+    }
     const body = current?.body || '';
     const notesUrl =
         releaseNotesUrl ||
@@ -176,6 +188,12 @@ async function run() {
                 elements: [{ type: 'mrkdwn', text: `_Truncated — full notes on <${notesUrl}|GitHub>_` }],
             });
         }
+        blocks.push({ type: 'divider' });
+    }
+
+    const matrixBlocks = testMatrixBlocks(testSummaries);
+    if (matrixBlocks.length > 0) {
+        blocks.push(...matrixBlocks);
         blocks.push({ type: 'divider' });
     }
 
