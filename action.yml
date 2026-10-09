@@ -50,8 +50,8 @@ inputs:
     default: "true"
   test-summary:
     description: >-
-      Embed the test matrix image(s) of the test summaries posted earlier in this workflow run by
-      cedana-test-summary, when any.
+      Embed the test matrix image(s) and one-line summary of the test summaries posted earlier in
+      this workflow run by cedana-test-summary, when any.
     required: false
     default: "true"
   dry-run:

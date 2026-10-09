@@ -50,7 +50,7 @@ Multi-version binary layout (e.g. one build per SLURM version, in subdirectories
 
 ### Test matrix
 
-When a job earlier in the same workflow run posted a test summary with [cedana-test-summary](https://github.com/cedana/cedana-test-summary), its test matrix image is embedded below the release notes. The test summary leaves its outputs behind as a `test-summary-<title>` artifact of the run, which this action looks up through the runner's own artifact API, so no token or permission is needed; when the run has no such artifact (for example when publishing runs before or without tests), nothing is embedded. Set `test-summary: false` to opt out.
+When a job earlier in the same workflow run posted a test summary with [cedana-test-summary](https://github.com/cedana/cedana-test-summary), its test matrix image is embedded below the release notes, followed by the same one-line summary (passed, failed, skipped, suites) the test summary shows. The test summary leaves its outputs behind as a `test-summary-<title>` artifact of the run, which this action looks up through the runner's own artifact API, so no token or permission is needed; when the run has no such artifact (for example when publishing runs before or without tests), nothing is embedded. Set `test-summary: false` to opt out.
 
 ## Inputs
 
