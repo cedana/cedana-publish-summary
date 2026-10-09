@@ -20,14 +20,18 @@ async function findTestSummaries() {
     return summaries;
 }
 
+// The image of each summary, captioned with the same one-line summary the
+// test summary itself shows (markdown bold -> mrkdwn bold).
 function testMatrixBlocks(summaries) {
     return summaries
         .filter((summary) => summary.imageUrl)
-        .map((summary) => ({
-            type: 'image',
-            image_url: summary.imageUrl,
-            alt_text: `Test matrix: ${summary.title}`,
-        }));
+        .flatMap((summary) => {
+            const blocks = [{ type: 'image', image_url: summary.imageUrl, alt_text: `Test matrix: ${summary.title}` }];
+            if (summary.summary) {
+                blocks.push({ type: 'section', text: { type: 'mrkdwn', text: summary.summary.replace(/\*\*/g, '*') } });
+            }
+            return blocks;
+        });
 }
 
 module.exports = { findTestSummaries, testMatrixBlocks };
