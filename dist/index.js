@@ -124542,11 +124542,25 @@ const { DefaultArtifactClient } = __nccwpck_require__(76846);
 const ARTIFACT_PREFIX = 'test-summary-';
 const ARTIFACT_FILE = 'test-summary.json';
 
+// A re-run attempt uploads another artifact under the same name, so keep the
+// newest one per name. Not `listArtifacts({ latest: true })`: that keeps the
+// highest id, and artifact ids are not ordered by creation time.
+function latestByName(artifacts) {
+    const latest = new Map();
+    for (const artifact of artifacts) {
+        const seen = latest.get(artifact.name);
+        if (!seen || artifact.createdAt > seen.createdAt) {
+            latest.set(artifact.name, artifact);
+        }
+    }
+    return [...latest.values()].sort((a, b) => a.createdAt - b.createdAt);
+}
+
 async function findTestSummaries() {
     const client = new DefaultArtifactClient();
-    const { artifacts } = await client.listArtifacts({ latest: true });
+    const { artifacts } = await client.listArtifacts();
     const summaries = [];
-    for (const artifact of artifacts.filter((a) => a.name.startsWith(ARTIFACT_PREFIX)).sort((a, b) => a.id - b.id)) {
+    for (const artifact of latestByName(artifacts.filter((a) => a.name.startsWith(ARTIFACT_PREFIX)))) {
         const dir = fs.mkdtempSync(path.join(os.tmpdir(), ARTIFACT_PREFIX));
         await client.downloadArtifact(artifact.id, { path: dir });
         summaries.push(JSON.parse(fs.readFileSync(path.join(dir, ARTIFACT_FILE), 'utf8')));
